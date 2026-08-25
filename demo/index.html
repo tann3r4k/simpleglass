@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>workingliquidglass — starry test</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; width: 100%; height: 100%;
+    background: #04060c; color: #fff;
+    font: 16px/1.45 ui-sans-serif, system-ui, sans-serif;
+  }
+  .bg-canvas {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse 120% 90% at 50% 42%, #1a2744 0%, #10182a 48%, #070b14 100%);
+  }
+  .stars-container {
+    position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+  }
+  .stars-container::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 48%, rgba(160, 32, 240, 0.22) 0%, rgba(139, 239, 73, 0.08) 42%, transparent 70%),
+      radial-gradient(ellipse 80% 50% at 18% 12%, rgba(139, 239, 73, 0.14) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 88% 18%, rgba(160, 32, 240, 0.18) 0%, transparent 48%);
+  }
+  .star {
+    position: absolute; background: #fff; border-radius: 50%;
+    box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.35);
+    animation: star-twinkle ease-in-out infinite;
+  }
+  @keyframes star-twinkle {
+    0%, 100% { opacity: 0.35; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+  body { display: flex; align-items: center; justify-content: center; min-height: 100dvh; }
+  .wrap { position: relative; z-index: 1; width: min(420px, 92vw); }
+  .card {
+    padding: 32px 28px 28px;
+    border-radius: 28px;
+    background: transparent;
+  }
+  h1 { margin: 0 0 8px; font-size: 22px; letter-spacing: -0.03em; }
+  p { color: rgba(255,255,255,0.72); margin: 0 0 18px; }
+  a { color: #8bef49; }
+  label { display: block; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; color: rgba(255,255,255,.72); }
+  input, button { width: 100%; min-height: 44px; font: inherit; border-radius: 14px; }
+  input {
+    margin-bottom: 12px; padding: 10px 12px;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.08); color: #fff;
+  }
+  button {
+    cursor: pointer; border: 0; background: #8bef49; color: #061108; font-weight: 800;
+  }
+  #out { min-height: 1.3em; color: #8bef49; margin-top: 10px; }
+</style>
+<div class="bg-canvas" id="bg-canvas" aria-hidden="true"></div>
+<div class="stars-container" id="stars-container" aria-hidden="true"></div>
+<main class="wrap">
+  <a href="#ok" id="outside">outside link</a>
+  <section class="card" id="card">
+    <h1>starry glass test</h1>
+    <p>stars should bend at the card edges. no white ring. this form still works.</p>
+    <label>name <input id="name" value="tanner"></label>
+    <button type="button" id="go">submit</button>
+    <p id="out"></p>
+  </section>
+  <p id="ok">page still here</p>
+</main>
+<script type="module">
+  import { glass } from "../src/index.js";
+  const box = document.getElementById("stars-container");
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < 180; i++) {
+    const el = document.createElement("div");
+    el.className = "star";
+    el.style.top = Math.random() * 100 + "%";
+    el.style.left = Math.random() * 100 + "%";
+    const s = Math.random() * 2.2 + 0.8;
+    el.style.width = s + "px";
+    el.style.height = s + "px";
+    el.style.animationDelay = Math.random() * -5 + "s";
+    el.style.animationDuration = Math.random() * 4 + 2.5 + "s";
+    frag.appendChild(el);
+  }
+  box.appendChild(frag);
+  window.__pane = glass("#card", {
+    from: "#bg-canvas, #stars-container",
+    radius: 28,
+  });
+  document.getElementById("go").onclick = () => {
+    document.getElementById("out").textContent =
+      "hi " + document.getElementById("name").value;
+  };
+</script>

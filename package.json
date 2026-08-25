@@ -1,0 +1,39 @@
+{
+  "name": "workingliquidglass",
+  "version": "0.1.0",
+  "description": "Liquid glass for one element. Doesn't eat the page.",
+  "type": "module",
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    }
+  },
+  "files": [
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node test/map.test.js"
+  },
+  "keywords": [
+    "glass",
+    "refraction",
+    "svg",
+    "displacement"
+  ],
+  "author": "tann3r4k",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tann3r4k/workingliquidglass.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tann3r4k/workingliquidglass/issues"
+  },
+  "homepage": "https://github.com/tann3r4k/workingliquidglass#readme"
+}
