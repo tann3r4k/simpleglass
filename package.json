@@ -1,7 +1,10 @@
 {
-  "name": "simpleliquidglass",
+  "name": "@tannerk907/simpleliquidglass",
   "version": "0.1.0",
-  "description": "Liquid glass for one element. Doesn't eat the page.",
+  "description": "simple liquid glass for one element. doesn't eat the page.",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./src/index.js",
   "module": "./src/index.js",

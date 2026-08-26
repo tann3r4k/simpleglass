@@ -4,8 +4,12 @@ the other liquid glass packages break your page. this one wraps one element and 
 
 no white ring. clicks still work. it does not lock scroll or clone your whole DOM.
 
+```
+npm i @tannerk907/simpleliquidglass
+```
+
 ```js
-import { glass } from 'simpleliquidglass'
+import { glass } from '@tannerk907/simpleliquidglass'
 
 glass(document.querySelector('.card'))
 ```
