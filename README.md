@@ -5,8 +5,10 @@ the other liquid glass packages break your page. this one wraps one element and 
 no white ring. clicks still work. it does not lock scroll or clone your whole DOM.
 
 ```
-npm i @tannerk907/simpleliquidglass
+npm i github:tann3r4k/simpleliquidglass
 ```
+
+unscoped `simpleliquidglass` on npm is blocked (too close to an existing `simple-liquid-glass`). github is the real name.
 
 ```js
 import { glass } from '@tannerk907/simpleliquidglass'
