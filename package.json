@@ -1,10 +1,7 @@
 {
-  "name": "@tannerk907/simpleliquidglass",
+  "name": "simpleglass",
   "version": "0.1.0",
   "description": "simple liquid glass for one element. doesn't eat the page.",
-  "publishConfig": {
-    "access": "public"
-  },
   "type": "module",
   "main": "./src/index.js",
   "module": "./src/index.js",
@@ -33,10 +30,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tann3r4k/simpleliquidglass.git"
+    "url": "git+https://github.com/tann3r4k/simpleglass.git"
   },
   "bugs": {
-    "url": "https://github.com/tann3r4k/simpleliquidglass/issues"
+    "url": "https://github.com/tann3r4k/simpleglass/issues"
   },
-  "homepage": "https://github.com/tann3r4k/simpleliquidglass#readme"
+  "homepage": "https://github.com/tann3r4k/simpleglass#readme"
 }

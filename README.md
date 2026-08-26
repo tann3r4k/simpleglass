@@ -1,17 +1,15 @@
-# simpleliquidglass
+# simpleglass
 
 the other liquid glass packages break your page. this one wraps one element and leaves everything else alone.
 
 no white ring. clicks still work. it does not lock scroll or clone your whole DOM.
 
 ```
-npm i github:tann3r4k/simpleliquidglass
+npm i simpleglass
 ```
 
-unscoped `simpleliquidglass` on npm is blocked (too close to an existing `simple-liquid-glass`). github is the real name.
-
 ```js
-import { glass } from '@tannerk907/simpleliquidglass'
+import { glass } from 'simpleglass'
 
 glass(document.querySelector('.card'))
 ```
