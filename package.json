@@ -1,5 +1,5 @@
 {
-  "name": "workingliquidglass",
+  "name": "simpleliquidglass",
   "version": "0.1.0",
   "description": "Liquid glass for one element. Doesn't eat the page.",
   "type": "module",
@@ -30,10 +30,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tann3r4k/workingliquidglass.git"
+    "url": "git+https://github.com/tann3r4k/simpleliquidglass.git"
   },
   "bugs": {
-    "url": "https://github.com/tann3r4k/workingliquidglass/issues"
+    "url": "https://github.com/tann3r4k/simpleliquidglass/issues"
   },
-  "homepage": "https://github.com/tann3r4k/workingliquidglass#readme"
+  "homepage": "https://github.com/tann3r4k/simpleliquidglass#readme"
 }

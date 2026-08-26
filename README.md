@@ -1,11 +1,11 @@
-# workingliquidglass
+# simpleliquidglass
 
 the other liquid glass packages break your page. this one wraps one element and leaves everything else alone.
 
 no white ring. clicks still work. it does not lock scroll or clone your whole DOM.
 
 ```js
-import { glass } from 'workingliquidglass'
+import { glass } from 'simpleliquidglass'
 
 glass(document.querySelector('.card'))
 ```

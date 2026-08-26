@@ -109,7 +109,7 @@ function pin(scene, host) {
  */
 export function glass(el, opts = {}) {
   const host = typeof el === "string" ? document.querySelector(el) : el;
-  if (!(host instanceof Element)) throw new Error("workingliquidglass: need an element");
+  if (!(host instanceof Element)) throw new Error("simpleliquidglass: need an element");
 
   const id = "wlg" + ++seq;
   const radius = opts.radius ?? 24;
