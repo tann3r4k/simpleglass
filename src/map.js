@@ -11,8 +11,16 @@ export function roundedRectSDF(x, y, width, height, radius) {
   return Math.min(Math.max(qx, qy), 0) + Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) - radius;
 }
 
-/** Fill RGBA displacement map. data is Uint8ClampedArray length w*h*4. */
-export function fillDisplacement(data, w, h) {
+export const DEFAULT_BEZEL = 0.16;
+
+/**
+ * Fill RGBA displacement map. data is Uint8ClampedArray length w*h*4.
+ * bezel is the bending rim as a fraction of the element. The center stays
+ * neutral (128). 0.16 is wide enough to see on a large card. The previous
+ * SDF stayed at 1 until the last 2 percent, so feDisplacementMap barely moved.
+ */
+export function fillDisplacement(data, w, h, bezel = DEFAULT_BEZEL) {
+  const rim = bezel > 0 ? bezel : DEFAULT_BEZEL;
   const raw = new Float32Array(w * h * 2);
   let max = 1;
   let i = 0;
@@ -20,10 +28,10 @@ export function fillDisplacement(data, w, h) {
     for (let x = 0; x < w; x++) {
       const ix = x / w - 0.5;
       const iy = y / h - 0.5;
-      const d = roundedRectSDF(ix, iy, 0.32, 0.22, 0.55);
-      const scaled = smoothStep(0, 1, smoothStep(0.8, 0, d - 0.15));
-      const dx = (ix * scaled + 0.5) * w - x;
-      const dy = (iy * scaled + 0.5) * h - y;
+      const edgeDist = Math.min(0.5 - Math.abs(ix), 0.5 - Math.abs(iy));
+      const scaled = smoothStep(0, 1, Math.min(1, Math.max(0, edgeDist / rim)));
+      const dx = w * ix * (scaled - 1);
+      const dy = h * iy * (scaled - 1);
       raw[i++] = dx;
       raw[i++] = dy;
       max = Math.max(max, Math.abs(dx), Math.abs(dy));
@@ -46,13 +54,13 @@ export function fillDisplacement(data, w, h) {
   return data;
 }
 
-export function displacementDataURL(w = 128, h = 128) {
+export function displacementDataURL(w = 128, h = 128, bezel = DEFAULT_BEZEL) {
   const c = document.createElement("canvas");
   c.width = w;
   c.height = h;
   const ctx = c.getContext("2d");
   const img = ctx.createImageData(w, h);
-  fillDisplacement(img.data, w, h);
+  fillDisplacement(img.data, w, h, bezel);
   ctx.putImageData(img, 0, 0);
   return c.toDataURL("image/png");
 }

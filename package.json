@@ -1,6 +1,6 @@
 {
   "name": "simpleglass",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "simple liquid glass for one element. doesn't eat the page.",
   "type": "module",
   "main": "./src/index.js",
@@ -9,8 +9,10 @@
   "exports": {
     ".": {
       "types": "./src/index.d.ts",
-      "import": "./src/index.js"
-    }
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "src",

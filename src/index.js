@@ -1,4 +1,4 @@
-import { displacementDataURL } from "./map.js";
+import { DEFAULT_BEZEL, displacementDataURL } from "./map.js";
 
 let seq = 0;
 let cssOnce = false;
@@ -7,7 +7,7 @@ const CSS = `
 .wlg-lens,.wlg-frost{
   position:absolute;inset:0;border-radius:inherit;pointer-events:none;
 }
-.wlg-lens{overflow:hidden}
+.wlg-lens{overflow:visible}
 .wlg-scene{position:absolute;pointer-events:none}
 .wlg-scene>*{position:absolute;inset:0;margin:0}
 .wlg-frost{background:rgba(255,255,255,0.028)}
@@ -45,21 +45,23 @@ function makeSvg(id, strength) {
   return svg;
 }
 
-function applyMap(svg, id) {
+function applyMap(svg, id, bezel) {
   const img = svg.querySelector("#" + id + "-img");
   if (!img) return;
-  const url = displacementDataURL();
+  const url = displacementDataURL(128, 128, bezel);
   img.setAttribute("href", url);
   img.setAttributeNS("http://www.w3.org/1999/xlink", "href", url);
 }
 
-const KILL = new Set(["SCRIPT", "IFRAME", "OBJECT", "EMBED", "LINK", "VIDEO", "AUDIO"]);
+const KILL = new Set(["SCRIPT", "IFRAME", "OBJECT", "EMBED", "LINK", "VIDEO", "AUDIO", "DIALOG"]);
 
 function sourcesOf(from) {
-  if (!from) return [];
-  if (typeof from === "string") return Array.from(document.querySelectorAll(from));
-  if (from instanceof Element) return [from];
-  return Array.from(from);
+  let nodes = [];
+  if (!from) return nodes;
+  if (typeof from === "string") nodes = Array.from(document.querySelectorAll(from));
+  else if (from instanceof Element) nodes = [from];
+  else nodes = Array.from(from);
+  return nodes.filter((el) => el && !el.closest(".wlg-scene"));
 }
 
 function cloneScene(source, host) {
@@ -88,6 +90,7 @@ function cloneScene(source, host) {
 
 function fillScene(scene, sources, host) {
   scene.replaceChildren(...sources.map((s) => cloneScene(s, host)));
+  scene._sources = sources;
   pin(scene, host);
 }
 
@@ -97,6 +100,21 @@ function pin(scene, host) {
   scene.style.top = -r.top + "px";
   scene.style.width = window.innerWidth + "px";
   scene.style.height = window.innerHeight + "px";
+  const sources = scene._sources || [];
+  [...scene.children].forEach((clone, index) => {
+    const source = sources[index];
+    if (!source || !source.isConnected) return;
+    const box = source.getBoundingClientRect();
+    clone.style.position = "absolute";
+    clone.style.margin = "0";
+    clone.style.inset = "auto";
+    clone.style.right = "auto";
+    clone.style.bottom = "auto";
+    clone.style.left = box.left + "px";
+    clone.style.top = box.top + "px";
+    clone.style.width = box.width + "px";
+    clone.style.height = box.height + "px";
+  });
 }
 
 /**
@@ -104,7 +122,7 @@ function pin(scene, host) {
  * clone the whole page, or paint a white rim.
  *
  * @param {Element|string} el
- * @param {{ radius?: number, strength?: number, frost?: number, from?: Element|string|null }} [opts]
+ * @param {{ radius?: number, strength?: number, frost?: number, bezel?: number, from?: Element|string|null }} [opts]
  * @returns {{ update: function, destroy: function }}
  */
 export function glass(el, opts = {}) {
@@ -116,6 +134,7 @@ export function glass(el, opts = {}) {
   const strength = opts.strength ?? 64;
   const frost = opts.frost ?? 0.028;
   const from = opts.from ?? null;
+  const bezel = opts.bezel ?? DEFAULT_BEZEL;
 
   ensureCss();
 
@@ -150,11 +169,15 @@ export function glass(el, opts = {}) {
   kids.forEach((n) => content.appendChild(n));
 
   host.append(svg, lens, frostEl, content);
-  applyMap(svg, id);
+  applyMap(svg, id, bezel);
 
-  const sources = sourcesOf(from);
-  if (sources.length) fillScene(scene, sources, host);
-  else {
+  function refresh() {
+    const next = sourcesOf(from);
+    if (next.length) fillScene(scene, next, host);
+    return next;
+  }
+
+  if (!refresh().length) {
     const plate = document.createElement("div");
     plate.style.cssText =
       "position:absolute;inset:0;background:rgba(255,255,255,0.05);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)";
@@ -162,17 +185,17 @@ export function glass(el, opts = {}) {
   }
 
   const onMove = () => {
-    if (sources.length) pin(scene, host);
+    if (scene._sources?.length) pin(scene, host);
   };
-  if (sources.length) {
+  if (from) {
     window.addEventListener("resize", onMove, { passive: true });
     window.addEventListener("scroll", onMove, { passive: true, capture: true });
   }
 
   return {
     update() {
-      applyMap(svg, id);
-      if (sources.length) fillScene(scene, sources, host);
+      applyMap(svg, id, bezel);
+      refresh();
     },
     destroy() {
       window.removeEventListener("resize", onMove);
